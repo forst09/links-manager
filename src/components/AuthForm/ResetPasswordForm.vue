@@ -6,16 +6,12 @@ import { Form } from '@primevue/forms'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 
-const emits = defineEmits(['resetPassword'])
-
 const formData = ref({
   email: '',
-  password: '',
 })
 
 const rules = z.object({
   email: z.email({ message: 'Некорректный email' }),
-  password: z.string().min(6, { message: 'Должно быть минимум 6 символов' }),
 })
 
 const resolver = ref(zodResolver(rules))
@@ -46,22 +42,8 @@ const submitForm = async ({ valid }) => {
         {{ $form.email.error.message }}
       </Message>
     </div>
-    <div class="mb-3">
-      <InputText
-        v-model="formData.password"
-        name="password"
-        placeholder="Введите пароль"
-        type="password"
-        class="w-full"
-      />
-      <Message v-if="$form.password?.invalid" severity="error" variant="simple" size="small">
-        {{ $form.password.error.message }}
-      </Message>
-    </div>
-    <span class="cursor-pointer mb-3 block" @click="emits('resetPassword')">Забыли пароль?</span>
-    <div class="grid grid-cols-2 gap-3">
-      <Button type="submit" class="w-full" label="Вход" />
-      <Button type="submit" icon="pi pi-github" class="w-full" label="Github" severity="contrast" />
+    <div class="grid">
+      <Button type="submit" class="w-full" label="Сброс пароля" />
     </div>
   </Form>
 </template>
