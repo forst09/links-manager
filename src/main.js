@@ -6,6 +6,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
+import ToastService from 'primevue/toastservice';
 
 import Button from "primevue/button"
 
@@ -24,6 +25,7 @@ app.use(PrimeVue, {
         }
     }
 });
+app.use(ToastService)
 
 app.component('Button', Button);
 

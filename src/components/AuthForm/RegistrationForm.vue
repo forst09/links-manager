@@ -2,9 +2,14 @@
 import { ref } from 'vue'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
+import { useToast } from 'primevue/usetoast'
 import { Form } from '@primevue/forms'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
+import Toast from 'primevue/toast'
+import { supabase } from '@/lib/supabaseClient'
+
+const toast = useToast()
 
 const formData = ref({
   email: '',
@@ -22,10 +27,30 @@ const resolver = ref(zodResolver(rules))
 
 const submitForm = async ({ valid }) => {
   console.log(valid)
+  if (!valid) return
+
+  const { data, error } = await supabase.auth.signUp({
+    email: formData.value.email,
+    password: formData.value.password,
+  })
+
+  if (error) {
+    toast.add({ severity: 'error', summary: 'Ошибка', detail: error, life: 3000 })
+  } else {
+    toast.add({
+      severity: 'success',
+      summary: 'Регистрация',
+      detail: 'Вы успешно зарегистрированы',
+      life: 3000,
+    })
+  }
+
+  console.log(data, error)
 }
 </script>
 
 <template>
+  <Toast />
   <Form
     v-slot="$form"
     :initial-values="formData"
