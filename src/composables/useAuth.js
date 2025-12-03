@@ -27,5 +27,15 @@ export function useAuth() {
         });
     }
 
-    return { signUp, signIn, loading, errorMessage }
+    const resetPassword = async (email) => {
+        return await handleRequest(async () => {
+            const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+
+            if (error) throw error
+
+            return data
+        });
+    }
+
+    return { signUp, signIn, resetPassword, loading, errorMessage }
 }
