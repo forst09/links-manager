@@ -29,7 +29,9 @@ export function useAuth() {
 
     const resetPassword = async (email) => {
         return await handleRequest(async () => {
-            const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+            const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: 'http://localhost:3000/reset-password'
+            })
 
             if (error) throw error
 
@@ -37,5 +39,15 @@ export function useAuth() {
         });
     }
 
-    return { signUp, signIn, resetPassword, loading, errorMessage }
+    const updatePassword = async (password) => {
+        return await handleRequest(async () => {
+            const { data, error } = await supabase.auth.updateUser({ password })
+
+            if (error) throw error
+
+            return data
+        });
+    }
+
+    return { signUp, signIn, resetPassword, updatePassword, loading, errorMessage }
 }
