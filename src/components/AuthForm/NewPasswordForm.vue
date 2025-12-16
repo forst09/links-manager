@@ -7,9 +7,11 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import { useToastNotification } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
+import { useRouter } from 'vue-router'
 
 const { showToast } = useToastNotification()
 const { updatePassword, loading, errorMessage } = useAuth()
+const router = useRouter()
 
 const password = ref('')
 
@@ -24,6 +26,7 @@ const submitForm = async ({ valid }) => {
 
   try {
     await updatePassword(password.value)
+    router.replace('/auth')
   } catch {
     showToast('error', 'Ошибка при создании нового пароля', errorMessage.value)
   }

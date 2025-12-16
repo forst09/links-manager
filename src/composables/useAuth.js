@@ -49,5 +49,15 @@ export function useAuth() {
         });
     }
 
-    return { signUp, signIn, resetPassword, updatePassword, loading, errorMessage }
+    const signInWithGithub = async () => {
+        return await handleRequest(async () => {
+            const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'github' })
+
+            if (error) throw error
+
+            return data
+        });
+    }
+
+    return { signUp, signIn, resetPassword, updatePassword, signInWithGithub, loading, errorMessage }
 }
