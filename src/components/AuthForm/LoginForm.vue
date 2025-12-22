@@ -7,11 +7,15 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import { useToastNotification } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/stores/userStore'
+import { useRouter } from 'vue-router'
 
 const emits = defineEmits(['resetPassword'])
 
 const { showToast } = useToastNotification()
 const { signIn, signInWithGithub, loading, errorMessage } = useAuth()
+const authStore = useUserStore()
+const router = useRouter()
 
 const formData = ref({
   email: '',
@@ -33,6 +37,9 @@ const submitForm = async ({ valid }) => {
       email: formData.value.email,
       password: formData.value.password,
     })
+    await authStore.getUser()
+
+    await router.replace({ name: 'home' })
   } catch {
     showToast('error', 'Ошибка входа', errorMessage.value)
   }
