@@ -1,4 +1,5 @@
 <script setup>
+import { supabase } from '@/lib/supabaseClient'
 import { useUserStore } from '@/stores/userStore'
 import { Avatar, Button, Menubar } from 'primevue'
 import { computed } from 'vue'
@@ -25,7 +26,12 @@ const emailFirstLetter = computed(() => {
       <template #end>
         <div class="flex items-center gap-2">
           <Avatar :label="emailFirstLetter" size="large" shape="circle" />
-          <Button icon="pi pi-sign-out" rounded severity="secondary" />
+          <Button
+            icon="pi pi-sign-out"
+            rounded
+            severity="secondary"
+            @click="supabase.auth.signOut"
+          />
         </div>
       </template>
     </Menubar>
