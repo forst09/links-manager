@@ -1,11 +1,11 @@
 <script setup>
 import { useAuth } from '@/composables/useAuth'
 import { useToastNotification } from '@/composables/useToastNotifications'
-import { supabase } from '@/lib/supabaseClient'
 import { useUserStore } from '@/stores/userStore'
 import { Avatar, Button, Menubar } from 'primevue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import CategoriesModal from './Modals/CategoriesModal.vue'
 
 const router = useRouter()
 
@@ -27,9 +27,12 @@ const signOutUser = async () => {
     showToast('error', 'Ошибка выхода', errorMessage.value)
   }
 }
+
+const categoriesDialogVisible = ref(false)
 </script>
 
 <template>
+  <CategoriesModal :model-value="categoriesDialogVisible" />
   <div class="mb-5">
     <Menubar>
       <template #start>
@@ -37,7 +40,7 @@ const signOutUser = async () => {
           <span class="font-bold">Link Manager</span>
           <div class="flex items-center gap-2">
             <Button icon="pi pi-link" rounded />
-            <Button icon="pi pi-folder" rounded />
+            <Button icon="pi pi-folder" rounded @click="categoriesDialogVisible = true" />
           </div>
         </div>
       </template>
