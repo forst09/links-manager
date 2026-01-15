@@ -72,7 +72,7 @@ watch(modelValue, async (newValue) => {
 
 <template>
   <Toast />
-  <Dialog header="Категории" v-model:visible="modelValue" :style="{ width: '25rem' }">
+  <Dialog modal header="Категории" v-model:visible="modelValue" :style="{ width: '25rem' }">
     <template v-if="isLoadingModal">
       <div class="grid mt-3 grid-cols-[1fr_32px] mb-1 items-center gap-5">
         <Skeleton width="100%" />

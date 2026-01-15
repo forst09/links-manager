@@ -6,6 +6,7 @@ import { Avatar, Button, Menubar } from 'primevue'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import CategoriesModal from './Modals/CategoriesModal.vue'
+import CreateLinkModal from './Modals/CreateLinkModal.vue'
 
 const router = useRouter()
 
@@ -29,9 +30,11 @@ const signOutUser = async () => {
 }
 
 const categoriesDialogVisible = ref(false)
+const createLinkDialogVisible = ref(false)
 </script>
 
 <template>
+  <CreateLinkModal :model-value="createLinkDialogVisible" />
   <CategoriesModal :model-value="categoriesDialogVisible" />
   <div class="mb-5">
     <Menubar>
@@ -39,7 +42,7 @@ const categoriesDialogVisible = ref(false)
         <div class="flex items-center gap-2">
           <span class="font-bold">Link Manager</span>
           <div class="flex items-center gap-2">
-            <Button icon="pi pi-link" rounded />
+            <Button icon="pi pi-link" rounded @click="createLinkDialogVisible = true" />
             <Button icon="pi pi-folder" rounded @click="categoriesDialogVisible = true" />
           </div>
         </div>
