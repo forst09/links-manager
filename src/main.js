@@ -1,14 +1,13 @@
-
 import 'primeicons/primeicons.css'
 import '@/assets/styles/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
-import ToastService from 'primevue/toastservice';
+import PrimeVue from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
+import ToastService from 'primevue/toastservice'
 
-import Button from "primevue/button"
+import Button from 'primevue/button'
 
 import App from './App.vue'
 import router from './router'
@@ -21,12 +20,19 @@ app.use(PrimeVue, {
     theme: {
         preset: Aura,
         options: {
-            darkModeSelector: false
-        }
-    }
-});
+            darkModeSelector: false,
+        },
+    },
+    pt: {
+        toast: {
+            root: {
+                style: 'max-width: calc(100vw - 40px)',
+            },
+        },
+    },
+})
 app.use(ToastService)
 
-app.component('Button', Button);
+app.component('Button', Button)
 
 app.mount('#app')

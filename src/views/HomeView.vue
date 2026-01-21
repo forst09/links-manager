@@ -1,7 +1,12 @@
 <script setup>
+import CardLink from '@/components/CardLink.vue'
+import Loader from '@/components/Loader.vue'
+import { useLinksStore } from '@/stores/linksStore'
 import { onMounted } from 'vue'
 
-onMounted(() => {
+const linksStore = useLinksStore()
+
+onMounted(async () => {
   if (window.location.hash) {
     const hashParams = new URLSearchParams(window.location.hash.substring(1))
     const accessToken = hashParams.get('access_token')
@@ -10,9 +15,18 @@ onMounted(() => {
       window.history.replaceState(null, null, window.location.pathname)
     }
   }
+  await linksStore.fetchLinks()
 })
 </script>
 
 <template>
-  <Button label="Verify" severity="danger" />
+  <Loader v-if="linksStore.isLoading" />
+  <div v-else>
+    <h2 v-if="!linksStore.links.length" class="font-bold text-center">Вы еще не добавили ссылок</h2>
+    <template v-else>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CardLink v-for="link in linksStore.links" :key="link.id" :link="link" />
+      </div>
+    </template>
+  </div>
 </template>

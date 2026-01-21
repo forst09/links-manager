@@ -8,8 +8,10 @@ import { supabase } from '@/lib/supabaseClient'
 import { useToastNotification } from '@/composables/useToastNotifications'
 import Loader from '../Loader.vue'
 import { useUserStore } from '@/stores/userStore'
+import { useLinksStore } from '@/stores/linksStore'
 
 const userStore = useUserStore()
+const linksStore = useLinksStore()
 
 const modelValue = defineModel()
 const isLoading = ref(false)
@@ -102,6 +104,7 @@ const addNewLink = async () => {
 
 const submitForm = async () => {
   await addNewLink()
+  await linksStore.fetchLinks()
 }
 
 watch(modelValue, async (newValue) => {
