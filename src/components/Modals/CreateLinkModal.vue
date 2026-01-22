@@ -1,7 +1,7 @@
 <script setup>
 import { Form } from '@primevue/forms'
 import { Button, Checkbox, Dialog, InputText, Message, Select, Textarea, Toast } from 'primevue'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import z from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { supabase } from '@/lib/supabaseClient'
@@ -17,6 +17,17 @@ const modelValue = defineModel()
 const isLoading = ref(false)
 const isLoadingBtn = ref(false)
 const { showToast } = useToastNotification()
+
+const props = defineProps({
+  isEdit: {
+    type: Boolean,
+    default: false,
+  },
+  id: {
+    type: Number,
+    required: false,
+  },
+})
 
 const rules = z.object({
   name: z.string().min(1, { message: 'Название обязательно для заполнения' }),
@@ -57,9 +68,28 @@ const getCategories = async () => {
   }
 }
 
+const getLink = async () => {
+  try {
+    const { data, error } = await supabase.from('links').select().eq('id', props.id)
+
+    if (error) throw error
+
+    formInputs.value.name = data[0].name
+    formInputs.value.url = data[0].url
+    formInputs.value.description = data[0].description
+    formInputs.value.isFavorite = data[0].is_favorite
+    formInputs.value.category = listCategories.value.find((item) => item.id === data[0].category)
+  } catch {
+    showToast('error', 'Ошибка при получении данных')
+  }
+}
+
 const loadModal = async () => {
   isLoading.value = true
   await getCategories()
+  if (props.isEdit) {
+    await getLink()
+  }
   isLoading.value = false
 }
 
@@ -102,10 +132,43 @@ const addNewLink = async () => {
   }
 }
 
+const updateLink = async () => {
+  isLoadingBtn.value = true
+  try {
+    const payload = {
+      name: formInputs.value.name,
+      url: formInputs.value.url,
+      description: formInputs.value.description,
+      category: formInputs.value.category.id,
+      is_favorite: formInputs.value.isFavorite,
+    }
+
+    const { error } = await supabase.from('links').update(payload).eq('id', props.id)
+
+    if (error) throw error
+    showToast('success', 'Успех', 'Ссылка изменена')
+  } catch {
+    showToast('error', 'Ошибка при изменении ссылки')
+  } finally {
+    isLoadingBtn.value = false
+  }
+}
+
 const submitForm = async () => {
-  await addNewLink()
+  if (props.isEdit) {
+    await updateLink()
+  } else {
+    await addNewLink()
+  }
   await linksStore.fetchLinks()
 }
+
+const textButton = computed(() => {
+  return props.isEdit ? 'Сохранить' : 'Добавить'
+})
+const textHeader = computed(() => {
+  return props.isEdit ? 'Редактирование ссылки' : 'Создание ссылки'
+})
 
 watch(modelValue, async (newValue) => {
   if (newValue) {
@@ -116,7 +179,7 @@ watch(modelValue, async (newValue) => {
 
 <template>
   <Toast />
-  <Dialog modal header="Создание ссылки" v-model:visible="modelValue" :style="{ width: '25rem' }">
+  <Dialog modal :header="textHeader" v-model:visible="modelValue" :style="{ width: '25rem' }">
     <Form
       v-slot="$form"
       :initial-values="formInputs"
@@ -173,7 +236,7 @@ watch(modelValue, async (newValue) => {
           <label for="isFavorite">Добавить в избранное</label>
         </div>
         <div class="flex justify-end gap-2 mt-4">
-          <Button label="Добавить" type="submit" :loading="isLoadingBtn" />
+          <Button :label="textButton" type="submit" :loading="isLoadingBtn" />
         </div>
       </template>
     </Form>
