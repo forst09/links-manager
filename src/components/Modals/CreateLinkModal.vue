@@ -1,6 +1,6 @@
 <script setup>
 import { Form } from '@primevue/forms'
-import { Button, Checkbox, Dialog, InputText, Message, Select, Textarea, Toast } from 'primevue'
+import { Button, Checkbox, Dialog, InputText, Message, Select, Textarea } from 'primevue'
 import { computed, ref, watch } from 'vue'
 import z from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
@@ -178,7 +178,6 @@ watch(modelValue, async (newValue) => {
 </script>
 
 <template>
-  <Toast />
   <Dialog modal :header="textHeader" v-model:visible="modelValue" :style="{ width: '25rem' }">
     <Form
       v-slot="$form"

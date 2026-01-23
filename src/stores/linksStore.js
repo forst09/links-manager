@@ -5,19 +5,33 @@ import { ref } from 'vue'
 export const useLinksStore = defineStore('links', () => {
     const isLoading = ref(false)
     const links = ref([])
+    const onlyFavorites = ref(false)
+    const sortByPopular = ref(false)
 
     const fetchLinks = async () => {
         isLoading.value = true
-        const { data, error } = await supabase
-            .from('links')
-            .select(
-                'id, name, url, description, is_favorite, preview_image, click_count, categories (id, name)',
-            )
-            .order('created_at', { ascending: false })
+        try {
+            let query = supabase
+                .from('links')
+                .select(
+                    'id, name, url, description, is_favorite, preview_image, click_count, categories (id, name)',
+                )
 
-        if (error) throw error
-        links.value = data
-        isLoading.value = false
+            if (onlyFavorites.value) query.eq('is_favorite', true)
+            if (sortByPopular.value) {
+                query.order('click_count', { ascending: false })
+            } else {
+                query.order('created_at', { ascending: false })
+            }
+
+            const { data, error } = await query
+            if (error) throw error
+            links.value = data
+        } catch (e) {
+            console.error('Ошибка загрузки', e)
+        } finally {
+            isLoading.value = false
+        }
     }
 
     const changeIsFavorite = async (id) => {
@@ -56,7 +70,7 @@ export const useLinksStore = defineStore('links', () => {
         }
     }
 
-    return { isLoading, links, fetchLinks, changeIsFavorite, removeLink, addClickCount }
+    return { isLoading, links, onlyFavorites, sortByPopular, fetchLinks, changeIsFavorite, removeLink, addClickCount }
 })
 
 if (import.meta.hot) {

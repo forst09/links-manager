@@ -5,7 +5,6 @@ import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { Form } from '@primevue/forms'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
-import Toast from 'primevue/toast'
 import { useToastNotification } from '@/composables/useToastNotifications'
 import { useAuth } from '@/composables/useAuth'
 
@@ -42,7 +41,6 @@ const submitForm = async ({ valid }) => {
 </script>
 
 <template>
-  <Toast />
   <Form
     v-slot="$form"
     :initial-values="formData"
