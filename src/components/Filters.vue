@@ -5,7 +5,7 @@ import { Checkbox } from 'primevue'
 const linksStore = useLinksStore()
 
 const updateFilters = () => {
-  linksStore.fetchLinks()
+  linksStore.fetchLinks(true)
 }
 </script>
 
