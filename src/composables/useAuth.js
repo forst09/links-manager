@@ -30,7 +30,7 @@ export function useAuth() {
     const resetPassword = async (email) => {
         return await handleRequest(async () => {
             const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: 'http://localhost:3000/reset-password'
+                redirectTo: 'https://forst-links-manager.netlify.app/reset-password'
             })
 
             if (error) throw error
